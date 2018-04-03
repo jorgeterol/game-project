@@ -2,135 +2,118 @@
 
 'use strict'
 
-function mainGame() {
+function Game(parentElement) {
+    var self = this;
 
-    function Character() {
-        this.x = 0;
-        this.y = 480;
-        this.w = 20;
-        this.h = 20;
-        this.speedX = 10;
-        this.speedY = -5;
-        this.bottom = true;
+    self.parentElement = parentElement;
+    self.gameScreenElement = null;
 
-    }
+    self.gameOverButtonElement = null;
 
-    function Platform() {
-        this.x = 100;
-        this.y = 380;
-        this.w = 60;
-        this.h = 10;
-
-    }
-
-    var character = new Character();
-    var platform = new Platform();
-
-    var gravity = 0.1;
-
-    var canvas = document.querySelector('#canvas');
-    var ctx = canvas.getContext('2d');
-
-    // ******************
-    // ******************
-    // FRAME FUNCTION
-    // ******************
-    // ******************
-
-    function frame() {
-
-        // CLEAR CANVAS
-
-        function clearCanvas() {
-            ctx.clearRect(0, 0, 500, 500);
-        }
-
-        // DRAWING CANVAS
-
-        function draw(object) {
-            ctx.fillRect(object.x, object.y, object.w, object.h);
-        }
-
-        // UPDATING CANVAS
-
-        function updateCanvas() {
-            clearCanvas();
-            draw(character);
-            draw(platform);
-
-            if (character.bottom == false) {
-                jump()
-            }
-        }
-
-
-        updateCanvas()
-
-        window.requestAnimationFrame(frame);
-
-    }
-
-    function keyHandler(event) {
-        switch (event.keyCode) {
-            case 39: // Right
-                moveRight();
-                break;
-
-            case 37: // Left
-                moveLeft();
-                break;
-
-            case 38: // Arrow Up        
-                // THE ARROW UP IS FOR JUMPING, WE NEED TO RECREATE SOME KIND OF "GRAVITY", THE ARROW DOWN IT'S NOT USEFUL I THINK.
-                jump();
-                break;
-        }
-    }
-
-
-    window.addEventListener('keydown', keyHandler) // Not sure if window is the best option.
-
-
-    // ******************
-    // ******************
-    // MOVING FUNCTIONS
-    // ******************
-    // ******************
-
-    function moveRight() {
-
-        if (character.x <= 470) { //470 BECAUSE THE WIDHT OF THE CANVAS IS 500 AND IT NEED TO STOP BEFORE REACHING THE END. THE COORDENATES START AT THE TOP RIGHT OF THE SQUARE. 
-            character.x += character.speedX;
-        }
-
-    }
-
-    function moveLeft() {
-        if (character.x >= 10) { //SAME HERE WITH 10.
-            character.x -= character.speedX;
-        }
-    }
-
-    function jump() {
-        var rockBottom = 500 - character.h;
-
-        if (character.y > rockBottom) {
-            character.bottom = true;
-
-            character.y = rockBottom;
-            character.speedY = -5;
-
-        } else {
-            character.bottom = false;
-
-            character.speedY += gravity;
-            character.y += character.speedY;
-
-        }
-    }    
-
-    window.requestAnimationFrame(frame);
+    self.canvasElement;
+    self.ctx = null;
 
 }
 
-// window.addEventListener('load', mainGame); It's in main.js
+Game.prototype.createGame = function () {
+    var self = this;
+
+    self.gameScreenElement = createHtml(`<div class="game-screen container">
+        <div class="header">
+        </div>
+        <div class="main">
+        <div>
+        <button class="btn-game-over">Game over</button>
+        </div>
+        <div>
+        <canvas id="canvas-id"></canvas>
+        </div>
+        </div>
+        <div class="footer">
+        </div>
+        </div>`)
+
+
+    self.gameOverButtonElement = self.gameScreenElement.querySelector('.btn-game-over')
+    // self.gameOverButtonElement.addEventListener('click', handleGameOverClick) //I'm adding a game over button just for testing purposes. Delete when everything works.
+
+    self.canvasElement = self.gameScreenElement.querySelector('#canvas-id')
+    self.canvasElement.height = 500;
+    self.canvasElement.width = 500;
+    self.ctx = self.canvasElement.getContext('2d');
+
+    self.parentElement.appendChild(self.gameScreenElement);
+}
+
+
+Game.prototype.gameFrame = function (player, platform) {
+    var self = this;
+
+    self.updateCanvas(player, platform)
+}
+
+Game.prototype.clearCanvas = function () {
+    var self = this;
+
+    self.ctx.clearRect(0, 0, 500, 500);
+}
+
+Game.prototype.draw = function (object) {
+    var self = this;
+
+    self.ctx.fillRect(object.x, object.y, object.w, object.h);
+}
+
+Game.prototype.updateCanvas = function (player, platform) {
+    var self = this;
+
+    self.clearCanvas();
+    self.draw(player);
+    self.draw(platform);
+
+
+    if (player.bottom === false) {
+        player.jump()
+    }
+
+
+    if (player.x == 480 && player.y == 480) {
+        self.gameOver();
+
+    }
+
+    // self.hitBottom(player);
+
+    window.requestAnimationFrame(function () {
+        self.gameFrame(player, platform);
+    });
+
+    
+
+}
+
+// Game.prototype.hitBottom = function (player) {
+//     var self = this;
+
+//     if (player.x == 100 && player.y < 360) {
+//         console.log(player.speedY);
+//         player.x = 100;
+//         player.y = 360;
+//         player.bottom = true;
+        
+//     }
+//     else {
+//         player.bottom = false;
+//     }
+// }
+
+Game.prototype.gameOver = function (player) {
+    var self = this;
+
+    self.gameScreenElement.remove();
+
+}
+
+// requestAnimationFrame
+// Aceder a las funciones de main.js
+// Move

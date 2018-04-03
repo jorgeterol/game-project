@@ -18,8 +18,11 @@ body {
 /* ---- typography ---- */
 
 body {
-    color: #111;
-    font-family: Helvetica, Arial, sans-serif;
+    /* background-color: #0F0F13; */
+    /* color: #FFFFFF; */
+    background-color: white;
+    color: black;
+    font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 147%;
 }
@@ -77,7 +80,7 @@ p {
 button {
     padding: 30px 10px;
     font-size: 20px;
-    background-color: greenyellow;
+    background-color: #FFFFFF;
     border: 2px solid black;
     border-radius: 10px;
 }
@@ -87,23 +90,35 @@ button {
 .title-screen {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
 .big-title {
-    flex: 1 0 auto;
+    padding-top: 100px;
+    margin-bottom: 100px;
 }
 
 .title-buttons {
-    flex: 1 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.btn-start-div {
+    align-self: flex-start;
+}
+
+.btn-instructions-div {
+    align-self: flex-end;
 }
 
 /* ---- GAME-SCREEN ---- */
 
-.game-screen{
+.game-screen {
     display: flex;
     flex-direction: column-reverse;
 }
 
-#canvas{
+#canvas {
     border: 1px solid black;
 }
