@@ -1,9 +1,12 @@
 'use strict'
 
 function Platform() {
-    this.x = 100;
-    this.y = 380;
-    this.w = 60;
-    this.h = 10;
+    var self = this;
+    
+    self.x = 100;
+    self.y = 380;
+    self.w = 60;
+    self.h = 10;
+    self.color = 'green';
 
 }

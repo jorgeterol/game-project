@@ -7,11 +7,52 @@ function Player() {
     self.y = 480;
     self.w = 20;
     self.h = 20;
-    self.speedX = 10;
-    self.speedY = -5;
+    self.speedX = 0;
+    self.speedY = 0;
     self.gravity = 0.1;
-    self.bottom = true;
+    self.jumping = false;
+    self.color = 'red';
 
+}
+
+Player.prototype.update = function () {
+    var self = this;
+
+    switch (self.direction) {
+        case 'right': // Right
+            self.moveRight();
+            break;
+
+        case 'left': // Left
+            self.moveLeft();
+            break;
+
+        case 'up': // Arrow Up        
+            if (!self.jumping) {
+                self.jumping = true;
+                self.speedY = -5;
+                break;
+            }
+    }
+
+    if (self.jumping) {
+        self.jump(); 
+    }
+}
+
+Player.prototype.setDirection = function (direction) {
+    var self = this;
+
+    self.direction = direction;
+
+}
+
+
+Player.prototype.setSpeed = function (speedX, speedY) {
+    var self = this;
+
+    self.speedX = speedX;
+    self.speedY = speedY || self.speedY;
 }
 
 
@@ -37,66 +78,16 @@ Player.prototype.jump = function () {
 
     var rockBottom = 500 - self.h;
 
-     if (self.y > rockBottom) {
-         self.bottom = true;
+    if (self.y > rockBottom) {
+        self.jumping = false;
+        self.direction = null;
 
-         self.y = rockBottom;
-         self.speedY = -5;
-
-     } 
-
-     else {
-         self.bottom = false;
-
-         self.speedY += self.gravity;
-         self.y += self.speedY;
-
-     }
-
-    // if (self.bottom === true) {
-    //     self.speedY = -5;
-    //     self.y = rockBottom;
-
-    // } else if (self.bottom === false) {
-    //     self.speedY += self.gravity;
-    //     self.y += self.speedY;
-    //     if (self.y > rockBottom) {
-    //         self.bottom = true;
-    //     }
-    // }
-}
-
-Player.prototype.move = function () {
-    var self = this;
-
-    function keyHandler(event) {
-        switch (event.keyCode) {
-            case 39: // Right
-                self.moveRight();
-                break;
-
-            case 37: // Left
-                self.moveLeft();
-                break;
-
-            case 38: // Arrow Up        
-                self.bottom = false;
-                self.jump();
-                break;
-        }
+        self.y = rockBottom;
+        self.speedY = 0;
     }
 
-    window.addEventListener('keydown', keyHandler);
-
+    else {
+        self.speedY += self.gravity;
+        self.y += self.speedY;
+    }
 }
-
-// Player.prototype.hitGround = function (platform) {
-//     var self = this;
-
-//     if (self.x === platform.x && self.y === plaftorm.y){
-//         self.bottom = true;
-
-//     }
-
-//     console.log(self.bottom);
-// }

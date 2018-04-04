@@ -71,18 +71,15 @@ function main() {
         var game;
 
         game = new Game(mainContentElement);
-        var player = new Player();
-        var platform = new Platform();
-        
-        game.createGame();
-        game.updateCanvas(player, platform);
-        player.move();
+
+        game.gameOver(handleGameOverClick);
 
     }
 
     function destroyGameScreen() {
-        gameScreenElement.remove();
-        // game.gameOverButtonElement.removeEventListener('click', handleGameOverClick);
+
+        game.destroy();
+
     }
 
     //  ------------------
@@ -102,8 +99,8 @@ function main() {
         gameOverScreen = createHtml(`<div class="game-over-screen container">
         <h1>Score: X</h1>
         <button class="btn-restart">Restart Game</button>
-        </div>`)
 
+        </div>`)
         mainContentElement.appendChild(gameOverScreen);
 
         restartButtonElement = gameOverScreen.querySelector('.btn-restart');
