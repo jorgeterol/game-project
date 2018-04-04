@@ -1,10 +1,10 @@
 'use strict'
 
-function Enemy() {
+function Enemy(x,y) {
     var self = this;
 
-    self.x = 320;
-    self.y = 480;
+    self.x = x;
+    self.y = y;
     self.w = 20;
     self.h = 20;
     self.color = 'blue';

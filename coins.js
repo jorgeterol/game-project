@@ -5,8 +5,8 @@ function Coin(x,y) {
     
     self.x = x;
     self.y = y;
-    self.w = 12;
-    self.h = 12;
+    self.w = 15;
+    self.h = 15;
     self.color= 'yellow';
 
 

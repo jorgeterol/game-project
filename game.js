@@ -15,8 +15,10 @@ function Game(parentElement) {
 
     self.player = new Player();
     self.platform = new Platform();
-    self.coin = new Coin(250,488);
-    self.enemy = new Enemy();
+    self.coin = new Coin(250, 485);
+    self.coin2 = new Coin(200, 485);
+    self.enemy = new Enemy(320, 480);
+    self.enemy2 = new Enemy(100, 480);
 
     self.gameOverCallback = null;
 
@@ -80,12 +82,12 @@ Game.prototype.playerMovement = function () {
         switch (event.keyCode) {
             case 39: // Right
                 self.player.setDirection('right')
-                self.player.setSpeed(7.5)
+                self.player.setSpeed(5)
                 break;
 
             case 37: // Left
                 self.player.setDirection('left')
-                self.player.setSpeed(7.5)
+                self.player.setSpeed(5)
                 break;
 
             case 38: // Arrow Up        
@@ -128,7 +130,7 @@ Game.prototype.renderFrame = function () {
     var self = this;
 
     if (self.lives === 0) {
-       return self.gameOverCallback();
+        return self.gameOverCallback();
     }
 
     self.player.update();
@@ -136,29 +138,21 @@ Game.prototype.renderFrame = function () {
     self.draw(self.player);
     self.draw(self.platform);
     self.draw(self.coin);
+    self.draw(self.coin2);
     self.draw(self.enemy);
+    // self.draw(self.enemy2);
     // self.enemy.movement();
     self.scoreElement.innerText = self.score;
     self.livesElement.innerText = self.lives;
 
+    self.coinCheckCollision(self.player, self.coin);
+    self.coinCheckCollision(self.player, self.coin2);
 
+    self.enemyCheckCollision(self.player, self.enemy);
+    // self.enemyCheckCollision(self.player, self.enemy2);
 
+    self.platformCheckCollision(self.player, self.platform);
 
-    if ((self.player.x + self.player.w) === self.coin.x && (self.player.y + (self.player.h - self.coin.h)) === self.coin.y && self.coin.w > 0) {
-        self.coinCollisionDetected();
-    }
-
-    if (self.player.x === self.coin.x && (self.player.y + (self.player.h - self.coin.h)) === self.coin.y && self.coin.w > 0) {
-        self.coinCollisionDetected();
-    }
-
-    if ((self.player.x + self.player.w) === self.enemy.x && self.player.y == self.enemy.y && self.enemy.w > 0) {
-        self.enemyCollisionDetected();
-    }
-
-    if (self.player.x === self.platform.x) {
-        self.platformCollisionDetected();
-    }
 
     window.requestAnimationFrame(function () {
         self.renderFrame();
@@ -166,16 +160,39 @@ Game.prototype.renderFrame = function () {
 
 }
 
-Game.prototype.coinCollisionDetected = function () {
+Game.prototype.coinCheckCollision = function (player, coin) {
     var self = this;
 
-    self.coin.w = 0;
-    self.coin.h = 0;
-      
+    if ((player.x + player.w) === coin.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
+        self.coinCollisionDetected(coin);
+
+    }
+
+    if (player.x === coin.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
+        self.coinCollisionDetected(coin);
+    }
+}
+
+Game.prototype.coinCollisionDetected = function (coin) {
+    var self = this;
+
+    coin.w = 0;
+    coin.h = 0;
+
     self.score += 10;
 }
 
-Game.prototype.enemyCollisionDetected = function () {
+
+Game.prototype.enemyCheckCollision = function (player, enemy) {
+    var self = this;
+
+    if ((player.x + player.w) === enemy.x && player.y == enemy.y && enemy.w > 0) {
+        self.enemyCollisionDetected(enemy);
+    }
+
+}
+
+Game.prototype.enemyCollisionDetected = function (enemy) {
     var self = this;
 
     self.player.x = 0;
@@ -185,12 +202,24 @@ Game.prototype.enemyCollisionDetected = function () {
     self.lives -= 1;
 }
 
+Game.prototype.platformCheckCollision = function (player, platform) {
+    var self = this;
+
+    if (player.y === (platform.y+platform.h) && player.x>platform.x && player.x === (platform.x+platform.w)) {
+        player.y = platform.y - player.h;
+        player.x = platform.x;
+        player.jumping = false;
+    }
+
+}
+
 Game.prototype.platformCollisionDetected = function () {
     var self = this;
 
     console.log('now');
 
 }
+
 
 Game.prototype.gameOver = function (callback) {
     var self = this;
@@ -203,10 +232,3 @@ Game.prototype.destroy = function () {
 
     self.gameScreenElement.remove();
 }
-
-Game.prototype.onGameOver = function () {
-    var self = this;
-
-    return
-}
-
