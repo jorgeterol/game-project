@@ -9,4 +9,5 @@ function Platform() {
     self.h = 10;
     self.color = 'green';
 
+
 }

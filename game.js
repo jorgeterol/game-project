@@ -7,8 +7,8 @@ function Game(parentElement) {
 
     self.parentElement = parentElement;
     self.gameScreenElement = null;
-
-    self.gameOverButtonElement = null;
+    self.scoreElement = null;
+    self.livesElement = null;
 
     self.canvasElement;
     self.ctx = null;
@@ -21,6 +21,7 @@ function Game(parentElement) {
     self.gameOverCallback = null;
 
     self.score = 0;
+    self.lives = 3;
 
     self.init();
 }
@@ -39,11 +40,16 @@ Game.prototype.createGame = function () {
 
     self.gameScreenElement = createHtml(`<div class="game-screen container">
     <div class="header">
+    <p class="score">
+    <span class="label">SCORE : </span>
+    <span class="value"></span>
+    </p>
+    <p class="lives">
+    <span class="label">LIVES : </span>
+    <span class="value"></span>
+    </p>
     </div>
     <div class="main">
-    <div>
-    <button class="btn-game-over">Game over</button>
-    </div>
     <div>
     <canvas id="canvas-id"></canvas>
     </div>
@@ -54,6 +60,9 @@ Game.prototype.createGame = function () {
 
 
     self.canvasElement = self.gameScreenElement.querySelector('#canvas-id')
+    self.scoreElement = self.gameScreenElement.querySelector('.score .value')
+    self.livesElement = self.gameScreenElement.querySelector('.lives .value')
+
     self.canvasElement.height = 500;
     self.canvasElement.width = 500;
     self.ctx = self.canvasElement.getContext('2d');
@@ -125,9 +134,11 @@ Game.prototype.renderFrame = function () {
     self.draw(self.platform);
     self.draw(self.coin);
     self.draw(self.enemy);
+    self.scoreElement.innerText = self.score;
+    self.livesElement.innerText = self.lives;
 
 
-    if (self.player.x == 472.5 && self.player.y == 480) {
+    if (self.lives === 0) {
         self.gameOverCallback();
     }
 
@@ -144,6 +155,10 @@ Game.prototype.renderFrame = function () {
         self.enemyCollisionDetected();
     }
 
+    if (self.player.x === self.platform.x) {
+        self.platformCollisionDetected();
+    }
+
     window.requestAnimationFrame(function () {
         self.renderFrame();
     });
@@ -157,7 +172,6 @@ Game.prototype.coinCollisionDetected = function () {
     self.coin.h = 0;
 
     self.score += 10;
-    console.log(self.score);
 }
 
 Game.prototype.enemyCollisionDetected = function () {
@@ -166,8 +180,15 @@ Game.prototype.enemyCollisionDetected = function () {
     self.player.x = 0;
     self.player.y = 480;
 
-    self.score -= 10;
-    console.log(self.score);
+    self.score -= 5;
+    self.lives -= 1;
+}
+
+Game.prototype.platformCollisionDetected = function () {
+    var self = this;
+
+    console.log('now');
+
 }
 
 Game.prototype.gameOver = function (callback) {

@@ -27,25 +27,20 @@ function main() {
 
     function buildTitleScreen() {
         titleScreenElement = createHtml(`<div class="title-screen container">
-        <div class="big-title">
-        <h1>Tiny Platformer</h1>
-        </div>
-        <div class="title-buttons">
-        <div class="btn-start-div">
-        <button class="btn-start">Start Game</button>
-        </div>
-        <div class="btn-instructions-div">
-        <button class="btn-instructions">Instructions</button>
-        </div>
-        </div>
-        </div>`);
+            <div>
+            <h1 class="big-title">Tiny Platform</h1>
+            </div>
+            <div class="title-buttons">
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block align-middle btn-start">Start Game</button>
+            <button type="button" class="btn btn-outline-secondary btn-lg btn-block align-middle btn-instructions">Instructions</button>
+            </div>`);
 
         mainContentElement.appendChild(titleScreenElement);
 
         startButtonElement = titleScreenElement.querySelector('.btn-start');
         startButtonElement.addEventListener('click', handleStartClick);
 
-        // instructionButtonElement = titleScreenElement.querySelector('button-instruction');
+        // instructionButtonElement = titleScreenElement.querySelector('btn-instructions');
         // instructionButtonElement.addEventListener('click',);
 
     }

@@ -18,10 +18,8 @@ body {
 /* ---- typography ---- */
 
 body {
-    /* background-color: #0F0F13; */
-    /* color: #FFFFFF; */
-    background-color: white;
-    color: black;
+    background-color: #0F0F13;
+    color: #FFFFFF; 
     font-family: 'Josefin Sans', Helvetica, Arial, sans-serif;
     font-size: 16px;
     line-height: 147%;
@@ -87,22 +85,23 @@ button {
 
 /* ---- TITLE-SCREEN ---- */
 
-.title-screen {
+/* .title-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
+} */
 
 .big-title {
     padding-top: 100px;
+    padding-left: 120px;
     margin-bottom: 100px;
 }
 
-.title-buttons {
+/* .title-buttons {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-}
+} */
 
 .btn-start-div {
     align-self: flex-start;
@@ -118,7 +117,12 @@ button {
     display: flex;
     flex-direction: column-reverse;
 }
+/* 
+canvas{
 
-#canvas {
+} */
+
+#canvas-id {
+    background-color: #FFFFFF;
     border: 1px solid black;
 }
