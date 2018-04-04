@@ -15,7 +15,7 @@ function Game(parentElement) {
 
     self.player = new Player();
     self.platform = new Platform();
-    self.coin = new Coin();
+    self.coin = new Coin(250,488);
     self.enemy = new Enemy();
 
     self.gameOverCallback = null;
@@ -69,7 +69,6 @@ Game.prototype.createGame = function () {
     self.ctx.fillStyle = 'red';
 
     self.parentElement.appendChild(self.gameScreenElement);
-    self.renderFrame();
 
 }
 
@@ -81,12 +80,12 @@ Game.prototype.playerMovement = function () {
         switch (event.keyCode) {
             case 39: // Right
                 self.player.setDirection('right')
-                self.player.setSpeed(2.5)
+                self.player.setSpeed(7.5)
                 break;
 
             case 37: // Left
                 self.player.setDirection('left')
-                self.player.setSpeed(2.5)
+                self.player.setSpeed(7.5)
                 break;
 
             case 38: // Arrow Up        
@@ -128,19 +127,21 @@ Game.prototype.draw = function (object) {
 Game.prototype.renderFrame = function () {
     var self = this;
 
+    if (self.lives === 0) {
+       return self.gameOverCallback();
+    }
+
     self.player.update();
     self.clearCanvas();
     self.draw(self.player);
     self.draw(self.platform);
     self.draw(self.coin);
     self.draw(self.enemy);
+    // self.enemy.movement();
     self.scoreElement.innerText = self.score;
     self.livesElement.innerText = self.lives;
 
 
-    if (self.lives === 0) {
-        self.gameOverCallback();
-    }
 
 
     if ((self.player.x + self.player.w) === self.coin.x && (self.player.y + (self.player.h - self.coin.h)) === self.coin.y && self.coin.w > 0) {
@@ -170,7 +171,7 @@ Game.prototype.coinCollisionDetected = function () {
 
     self.coin.w = 0;
     self.coin.h = 0;
-
+      
     self.score += 10;
 }
 
@@ -202,3 +203,10 @@ Game.prototype.destroy = function () {
 
     self.gameScreenElement.remove();
 }
+
+Game.prototype.onGameOver = function () {
+    var self = this;
+
+    return
+}
+

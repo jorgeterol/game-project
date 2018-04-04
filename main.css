@@ -73,15 +73,6 @@ p {
 
 /* ---- components ---- */
 
-/* ---- BUTTONS ---- */
-
-button {
-    padding: 30px 10px;
-    font-size: 20px;
-    background-color: #FFFFFF;
-    border: 2px solid black;
-    border-radius: 10px;
-}
 
 /* ---- TITLE-SCREEN ---- */
 
@@ -117,12 +108,14 @@ button {
     display: flex;
     flex-direction: column-reverse;
 }
-/* 
-canvas{
 
-} */
 
 #canvas-id {
-    background-color: #FFFFFF;
+    background-color: rgb(255, 255, 255, 0.6);
     border: 1px solid black;
 }
+/* 
+.header{
+    display: flex;
+    justify-content: space-around;
+} */

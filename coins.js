@@ -1,10 +1,10 @@
 'use strict'
 
-function Coin() {
+function Coin(x,y) {
     var self = this;
     
-    self.x = 250;
-    self.y = 488;
+    self.x = x;
+    self.y = y;
     self.w = 12;
     self.h = 12;
     self.color= 'yellow';

@@ -11,3 +11,13 @@ function Enemy() {
 
 
 }
+
+// Enemy.prototype.movement = function () {
+//     var self = this;
+
+//     if (self.x <= 320) {
+//         self.x++
+//     } else if (self.x <= 330) {
+//         self.x--
+//     }
+// }
