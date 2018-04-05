@@ -66,6 +66,9 @@ Player.prototype.moveRight = function () {
     if (self.x <= 775) {
         self.x += self.speedX;
     }
+    else{
+        self.x = 10;
+    }
 
 }
 
@@ -74,6 +77,9 @@ Player.prototype.moveLeft = function () {
 
     if (self.x >= 10) {
         self.x -= self.speedX;
+    }
+    else{
+        self.x = 775;
     }
 }
 

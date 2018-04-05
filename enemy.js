@@ -9,15 +9,9 @@ function Enemy(x,y) {
     self.h = 25;
     self.color = '#ecf0f1';
 
+    self.img = new Image();
+    self.img.src = 'images/enemy-img.png';
+
+
 
 }
-
-// Enemy.prototype.movement = function () {
-//     var self = this;
-
-//     if (self.x <= 320) {
-//         self.x++
-//     } else if (self.x <= 330) {
-//         self.x--
-//     }
-// }

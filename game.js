@@ -16,7 +16,7 @@ function Game(parentElement) {
 
     self.player = new Player();
     self.platforms = [new Platform(200, 200), new Platform(280, 250), new Platform(80, 550), new Platform(180, 500), new Platform(380, 400), new Platform(500, 300), new Platform(600, 200), new Platform(640, 540), new Platform(100, 100)]
-    self.coins = [new Coin(330, 575), new Coin(220, 175), new Coin(600, 175), new Coin(700, 575), new Coin(140, 75) ];
+    self.coins = [new Coin(330, 575), new Coin(220, 175), new Coin(600, 175), new Coin(700, 575), new Coin(140, 75)];
     self.enemies = [new Enemy(420, 575), new Enemy(250, 575), new Enemy(280, 225), new Enemy(635, 175), new Enemy(100, 75)];
 
 
@@ -128,7 +128,7 @@ Game.prototype.draw = function (object) {
     self.ctx.fillStyle = self.player.color;
     self.ctx.fillRect(self.player.x, self.player.y, self.player.w, self.player.h);
     self.ctx.clearRect(self.player.x + 5, self.player.y + 5, 15, 15);
-    
+
 
     self.coins.forEach(function (coin) {
         self.ctx.fillStyle = coin.color;
@@ -137,7 +137,7 @@ Game.prototype.draw = function (object) {
 
     self.enemies.forEach(function (enemy) {
         self.ctx.fillStyle = enemy.color;
-        self.ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
+        self.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.w, enemy.h);
     })
 
     self.platforms.forEach(function (platform) {
@@ -162,11 +162,11 @@ Game.prototype.renderFrame = function () {
 
 
     self.player.update();
+
     self.playerGroundCollision();
     self.platformCheckCollision();
     self.coinCheckCollision();
     self.enemyCheckCollision();
-
 
     self.clearCanvas();
     self.draw();
@@ -195,18 +195,19 @@ Game.prototype.playerGroundCollision = function () {
 Game.prototype.coinCheckCollision = function () {
     var self = this;
 
+
+
     self.coins.forEach(function (coin) {
-        if ((self.player.x + self.player.w) === coin.x && (self.player.y + (self.player.h - coin.h)) === coin.y && coin.w > 0) {
+        if ((self.player.x + self.player.w) === coin.x && (self.player.y - (self.player.h - coin.h)) === coin.y) {
             self.coinCollisionDetected(coin);
 
-        }
-
-        if ((coin.x + coin.w) === self.player.x && (self.player.y + (self.player.h - coin.h)) === coin.y && coin.w > 0) {
+        } else if ((coin.x + coin.w) === self.player.x && (self.player.y - (self.player.h - coin.h)) === coin.y) {
             self.coinCollisionDetected(coin);
 
-        }
+        } else if (self.player.x + self.player.w > coin.x && self.player.x + self.player.w <= coin.x + coin.w && (self.player.y - (self.player.h - coin.h)) === coin.y) {
+            self.coinCollisionDetected(coin);
 
-        if (self.player.x >= coin.x && self.player.x <= (coin.x + coin.w) && (self.player.y + (self.player.h - coin.h)) === coin.y) {
+        } else if (coin.x + coin.w > self.player.x && coin.x + coin.w <= self.player.x + self.player.w && (self.player.y - (self.player.h - coin.h)) === coin.y) {
             self.coinCollisionDetected(coin);
         }
     })
@@ -215,8 +216,9 @@ Game.prototype.coinCheckCollision = function () {
 
 Game.prototype.coinCollisionDetected = function (coin) {
     var self = this;
+    var indexOfCoin = self.coins.indexOf(coin);
 
-    self.coins.splice(self.coins.indexOf(coin), 1);
+    self.coins.splice(indexOfCoin, 1);
 
     self.score += 10;
 }
@@ -277,10 +279,6 @@ Game.prototype.gameOver = function (callback) {
     var self = this;
 
     self.gameOverCallback = callback;
-}
-
-Game.prototype.winningCondition = function (coin) {
-    return coin.w === 0;
 }
 
 Game.prototype.youWon = function (callback) {
