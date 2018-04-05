@@ -228,20 +228,19 @@ Game.prototype.enemyCheckCollision = function () {
     var self = this;
 
     self.enemies.forEach(function (enemy) {
-        if ((self.player.x + self.player.w) === enemy.x && self.player.y == enemy.y && enemy.w > 0) {
-            self.enemyCollisionDetected();
+        if ((self.player.x + self.player.w) === enemy.x && (self.player.y - (self.player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected(enemy);
+
+        } else if ((enemy.x + enemy.w) === self.player.x && (self.player.y - (self.player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected(enemy);
+
+        } else if (self.player.x + self.player.w > enemy.x && self.player.x + self.player.w <= enemy.x + enemy.w && (self.player.y - (self.player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected(enemy);
+
+        } else if (enemy.x + enemy.w > self.player.x && enemy.x + enemy.w <= self.player.x + self.player.w && (self.player.y - (self.player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected(enemy);
         }
-
-
-        if ((enemy.x + enemy.w) === self.player.x && (self.player.y + (self.player.h - enemy.h)) === enemy.y && enemy.w > 0) {
-            self.enemyCollisionDetected();
-        }
-
-
-        if (self.player.x >= enemy.x && self.player.x <= (enemy.x + enemy.w) && (self.player.y + (self.player.h - enemy.h)) === enemy.y) {
-            self.enemyCollisionDetected();
-        }
-    });
+        });
 
 }
 
