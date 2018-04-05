@@ -18,11 +18,22 @@ function main() {
 
     var titleScreenElement;
     var startButtonElement;
+    var instructionButtonElement;
+    var instructionsElement;
 
     function handleStartClick() {
         destroyTitleScreen();
         buildGameScreen();
-        // mainGame();
+
+    }
+
+    function handleInstructionsClick() {
+        buildInstructions();
+    }
+
+    function handleRemoveInstructionsClick(){
+        instructionsElement.remove()
+        instructionButtonElement.addEventListener('click', handleInstructionsClick);
     }
 
     function buildTitleScreen() {
@@ -40,8 +51,21 @@ function main() {
         startButtonElement = titleScreenElement.querySelector('.btn-start');
         startButtonElement.addEventListener('click', handleStartClick);
 
-        // instructionButtonElement = titleScreenElement.querySelector('btn-instructions');
-        // instructionButtonElement.addEventListener('click',);
+        instructionButtonElement = titleScreenElement.querySelector('.btn-instructions');
+        instructionButtonElement.addEventListener('click', handleInstructionsClick);
+        
+    }
+
+    function buildInstructions() {
+        
+        instructionsElement = createHtml(`<div class="instructions">
+        <h3>- Collect all the coins.</h3>
+        <h3>- Don't get hit by an enemy.</h3>
+        </div> `);
+        
+        titleScreenElement.appendChild(instructionsElement);
+        instructionButtonElement.removeEventListener('click', handleInstructionsClick);
+        instructionButtonElement.addEventListener('click', handleRemoveInstructionsClick);
 
     }
 
@@ -77,7 +101,7 @@ function main() {
         game = new Game(mainContentElement);
 
         game.gameOver(handleGameOverClick);
-        
+
         game.youWon(handleYouWonClick);
 
     }
@@ -103,7 +127,7 @@ function main() {
 
         gameOverScreen = createHtml(`<div class="game-over-screen container">
         <div class="big-title-score">
-        <h1>Score: `+game.score+`</h1>
+        <h1>Score: ` + game.score + `</h1>
         <h2>You died!</h2>
         </div>
         <button class="btn btn-outline-secondary btn-lg btn-block align-middle btn-restart">Restart Game</button>
@@ -138,7 +162,7 @@ function main() {
 
         youWonScreen = createHtml(`<div class="you-won-screen container">
         <div class="big-title-score">
-        <h1>Score: `+game.score+`</h1>
+        <h1>Score: ` + game.score + `</h1>
         <h2>You Won!</h2>
         </div>
         <button class="btn btn-outline-secondary btn-lg btn-block align-middle btn-restart">Restart Game</button>
@@ -158,5 +182,6 @@ function main() {
 
     buildTitleScreen()
 }
+
 
 window.addEventListener('load', main);

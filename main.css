@@ -82,6 +82,10 @@ p {
     align-items: center;
 } */
 
+.instructions{
+    padding-top: 35px; 
+}
+
 .big-title {
     padding-top: 100px;
     padding-left: 45px;

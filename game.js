@@ -136,7 +136,7 @@ Game.prototype.renderFrame = function () {
         return self.gameOverCallback();
     }
 
-    if (self.score === 20) {
+    if (self.coin.w === 0 && self.coin2.w === 0) {
         return self.gameWonCallback();
     }
 
@@ -151,6 +151,8 @@ Game.prototype.renderFrame = function () {
     // self.enemy.movement();
     self.scoreElement.innerText = self.score;
     self.livesElement.innerText = self.lives;
+
+    // self.playerGroundCollision(self.player);
 
     self.coinCheckCollision(self.player, self.coin);
     self.coinCheckCollision(self.player, self.coin2);
@@ -175,28 +177,36 @@ Game.prototype.coinCheckCollision = function (player, coin) {
 
     }
 
-    if (player.x === coin.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
+    if ((coin.x + coin.w) === player.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
+        self.coinCollisionDetected(coin);
+
+    }
+
+    if (player.x >= coin.x && player.x <= (coin.x + coin.w) && (player.y + (player.h - coin.h)) === coin.y) {
         self.coinCollisionDetected(coin);
     }
+
 }
 
 // Game.prototype.playerGroundCollision = function (player) {
 //     var self = this;
 
-//     if ((player.y + player.h) === 500) {
-//         self.coinCollisionDetected(coin);
+//     if ((player.y + player.h) === 500 && player.direction !== 'up') {
+//         self.playerOnGround(player);
 //     }
 
 
 // }
 
-// Game.prototype.playerGroundCollision = function (player) {
+// Game.prototype.playerOnGround = function (player) {
 //     var self = this;
 
-//     if ((player.y + player.h) === 500) {
-//         self.coinCollisionDetected(coin);
-//     }
-
+//     if((player.y + player.h) === 500)
+//     player.ground = true;
+//     player.jumping = false;
+//     player.y = 480;
+//     player.speedY = 0;
+//     player.direction = null;
 
 // }
 
@@ -217,6 +227,17 @@ Game.prototype.enemyCheckCollision = function (player, enemy) {
         self.enemyCollisionDetected(enemy);
     }
 
+
+    if ((enemy.x + enemy.w) === player.x && (player.y + (player.h - enemy.h)) === enemy.y && enemy.w > 0) {
+        self.enemyCollisionDetected(enemy);
+    }
+
+
+    if (player.x >= enemy.x && player.x <= (enemy.x + enemy.w) && (player.y + (player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected(enemy);
+    }
+
+    
 }
 
 Game.prototype.enemyCollisionDetected = function (enemy) {
