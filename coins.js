@@ -10,5 +10,5 @@ function Coin(x, y) {
     self.color = 'yellow';
 
     self.img = new Image();
-    self.img.src = 'bitcoin.png'
+    self.img.src = 'images/bitcoin.png'
 }

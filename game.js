@@ -15,9 +15,9 @@ function Game(parentElement) {
 
 
     self.player = new Player();
-    self.platforms = [new Platform(200, 200), new Platform(280, 250), new Platform(80, 550), new Platform(180, 500), new Platform(380, 400), new Platform(500, 300), new Platform(600, 200),]
-    self.coins = [new Coin(330, 575), new Coin(220, 175)];
-    self.enemies = [new Enemy(420, 575), new Enemy(250, 575), new Enemy(280, 225), new Enemy(635, 175)];
+    self.platforms = [new Platform(200, 200), new Platform(280, 250), new Platform(80, 550), new Platform(180, 500), new Platform(380, 400), new Platform(500, 300), new Platform(600, 200), new Platform(640, 540), new Platform(100, 100)]
+    self.coins = [new Coin(330, 575), new Coin(220, 175), new Coin(600, 175), new Coin(700, 575), new Coin(140, 75) ];
+    self.enemies = [new Enemy(420, 575), new Enemy(250, 575), new Enemy(280, 225), new Enemy(635, 175), new Enemy(100, 75)];
 
 
     self.gameOverCallback = null;
@@ -127,6 +127,8 @@ Game.prototype.draw = function (object) {
 
     self.ctx.fillStyle = self.player.color;
     self.ctx.fillRect(self.player.x, self.player.y, self.player.w, self.player.h);
+    self.ctx.clearRect(self.player.x + 5, self.player.y + 5, 15, 15);
+    
 
     self.coins.forEach(function (coin) {
         self.ctx.fillStyle = coin.color;
@@ -154,25 +156,25 @@ Game.prototype.renderFrame = function () {
         return self.gameOverCallback();
     }
 
-    if (self.coins.length === 0 ){
+    if (self.coins.length === 0) {
         return self.gameWonCallback();
     }
 
-    
+
     self.player.update();
     self.playerGroundCollision();
     self.platformCheckCollision();
-    self.coinCheckCollision(self.player, self.coin);
+    self.coinCheckCollision();
     self.enemyCheckCollision();
-    
-    
+
+
     self.clearCanvas();
     self.draw();
-    
+
     self.scoreElement.innerText = self.score;
     self.livesElement.innerText = self.lives;
-    
-    
+
+
     window.requestAnimationFrame(function () {
         self.renderFrame();
     });
@@ -215,7 +217,7 @@ Game.prototype.coinCollisionDetected = function (coin) {
     var self = this;
 
     self.coins.splice(self.coins.indexOf(coin), 1);
-    
+
     self.score += 10;
 }
 

@@ -7,6 +7,6 @@ function Platform(x,y) {
     self.y = y;
     self.w = 60;
     self.h = 10;
-    self.color = 'green';
+    self.color = '#95a5a6';
 
 }

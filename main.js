@@ -59,7 +59,7 @@ function main() {
     function buildInstructions() {
         
         instructionsElement = createHtml(`<div class="instructions">
-        <h3>- Collect all the coins.</h3>
+        <h3>- Collect all the Bitcoins.</h3>
         <h3>- Don't get hit by an enemy.</h3>
         </div> `);
         

@@ -7,7 +7,7 @@ function Enemy(x,y) {
     self.y = y;
     self.w = 25;
     self.h = 25;
-    self.color = 'blue';
+    self.color = '#ecf0f1';
 
 
 }
