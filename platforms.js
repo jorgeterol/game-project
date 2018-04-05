@@ -1,13 +1,12 @@
 'use strict'
 
-function Platform() {
+function Platform(x,y) {
     var self = this;
     
-    self.x = 100;
-    self.y = 390;
+    self.x = x;
+    self.y = y;
     self.w = 60;
     self.h = 10;
     self.color = 'green';
-
 
 }

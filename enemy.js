@@ -5,8 +5,8 @@ function Enemy(x,y) {
 
     self.x = x;
     self.y = y;
-    self.w = 20;
-    self.h = 20;
+    self.w = 25;
+    self.h = 25;
     self.color = 'blue';
 
 

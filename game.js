@@ -13,13 +13,12 @@ function Game(parentElement) {
     self.canvasElement;
     self.ctx = null;
 
+
     self.player = new Player();
-    self.platform = new Platform();
-    // self.coins = [new Coin(250, 485), new Coin(200, 485)];
-    self.coin = new Coin(250, 485);
-    self.coin2 = new Coin(200, 485);
-    self.enemy = new Enemy(320, 480);
-    self.enemy2 = new Enemy(100, 480);
+    self.platforms = [new Platform(200, 200), new Platform(280, 250), new Platform(80, 550), new Platform(180, 500), new Platform(380, 400), new Platform(500, 300), new Platform(600, 200),]
+    self.coins = [new Coin(330, 575), new Coin(220, 175)];
+    self.enemies = [new Enemy(420, 575), new Enemy(250, 575), new Enemy(280, 225), new Enemy(635, 175)];
+
 
     self.gameOverCallback = null;
     self.gameWonCallback = null;
@@ -67,8 +66,8 @@ Game.prototype.createGame = function () {
     self.scoreElement = self.gameScreenElement.querySelector('.score .value')
     self.livesElement = self.gameScreenElement.querySelector('.lives .value')
 
-    self.canvasElement.height = 500;
-    self.canvasElement.width = 500;
+    self.canvasElement.width = 800;
+    self.canvasElement.height = 600;
     self.ctx = self.canvasElement.getContext('2d');
     self.ctx.fillStyle = 'red';
 
@@ -120,51 +119,60 @@ Game.prototype.playerMovement = function () {
 Game.prototype.clearCanvas = function () {
     var self = this;
 
-    self.ctx.clearRect(0, 0, 500, 500);
+    self.ctx.clearRect(0, 0, self.canvasElement.width, self.canvasElement.height);
 }
 
 Game.prototype.draw = function (object) {
     var self = this;
 
-    self.ctx.fillStyle = object.color;
-    self.ctx.fillRect(object.x, object.y, object.w, object.h);
+    self.ctx.fillStyle = self.player.color;
+    self.ctx.fillRect(self.player.x, self.player.y, self.player.w, self.player.h);
+
+    self.coins.forEach(function (coin) {
+        self.ctx.fillStyle = coin.color;
+        self.ctx.drawImage(coin.img, coin.x, coin.y, coin.w, coin.h);
+    })
+
+    self.enemies.forEach(function (enemy) {
+        self.ctx.fillStyle = enemy.color;
+        self.ctx.fillRect(enemy.x, enemy.y, enemy.w, enemy.h);
+    })
+
+    self.platforms.forEach(function (platform) {
+        self.ctx.fillStyle = platform.color;
+        self.ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+    })
+
+
 }
 
 Game.prototype.renderFrame = function () {
     var self = this;
-    
+
 
     if (self.lives === 0) {
         return self.gameOverCallback();
     }
 
-    if (self.coin.w === 0 && self.coin2.w === 0) {
+    if (self.coins.length === 0 ){
         return self.gameWonCallback();
     }
 
+    
     self.player.update();
     self.playerGroundCollision();
     self.platformCheckCollision();
-
     self.coinCheckCollision(self.player, self.coin);
-    self.coinCheckCollision(self.player, self.coin2);
-
-    self.enemyCheckCollision(self.player, self.enemy);
-    // self.enemyCheckCollision(self.player, self.enemy2);
-
+    self.enemyCheckCollision();
+    
+    
     self.clearCanvas();
-    self.draw(self.player);
-    self.draw(self.platform);
-    self.draw(self.coin);
-    self.draw(self.coin2);
-    self.draw(self.enemy);
-    // self.draw(self.enemy2);
-    // self.enemy.movement();
+    self.draw();
+    
     self.scoreElement.innerText = self.score;
     self.livesElement.innerText = self.lives;
-
-
-
+    
+    
     window.requestAnimationFrame(function () {
         self.renderFrame();
     });
@@ -173,7 +181,7 @@ Game.prototype.renderFrame = function () {
 
 Game.prototype.playerGroundCollision = function () {
     var self = this;
-    var rockBottom = 500 - self.player.h;
+    var rockBottom = self.canvasElement.height - self.player.h;
 
     if (self.player.y > rockBottom) {
         self.player.resetStatus();
@@ -182,60 +190,62 @@ Game.prototype.playerGroundCollision = function () {
     }
 }
 
-Game.prototype.coinCheckCollision = function (player, coin) {
+Game.prototype.coinCheckCollision = function () {
     var self = this;
 
-    if ((player.x + player.w) === coin.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
-        self.coinCollisionDetected(coin);
+    self.coins.forEach(function (coin) {
+        if ((self.player.x + self.player.w) === coin.x && (self.player.y + (self.player.h - coin.h)) === coin.y && coin.w > 0) {
+            self.coinCollisionDetected(coin);
 
-    }
+        }
 
-    if ((coin.x + coin.w) === player.x && (player.y + (player.h - coin.h)) === coin.y && coin.w > 0) {
-        self.coinCollisionDetected(coin);
+        if ((coin.x + coin.w) === self.player.x && (self.player.y + (self.player.h - coin.h)) === coin.y && coin.w > 0) {
+            self.coinCollisionDetected(coin);
 
-    }
+        }
 
-    if (player.x >= coin.x && player.x <= (coin.x + coin.w) && (player.y + (player.h - coin.h)) === coin.y) {
-        self.coinCollisionDetected(coin);
-    }
+        if (self.player.x >= coin.x && self.player.x <= (coin.x + coin.w) && (self.player.y + (self.player.h - coin.h)) === coin.y) {
+            self.coinCollisionDetected(coin);
+        }
+    })
 
 }
 
 Game.prototype.coinCollisionDetected = function (coin) {
     var self = this;
 
-    coin.w = 0;
-    coin.h = 0;
-
+    self.coins.splice(self.coins.indexOf(coin), 1);
+    
     self.score += 10;
 }
 
 
-Game.prototype.enemyCheckCollision = function (player, enemy) {
+Game.prototype.enemyCheckCollision = function () {
     var self = this;
 
-    if ((player.x + player.w) === enemy.x && player.y == enemy.y && enemy.w > 0) {
-        self.enemyCollisionDetected(enemy);
-    }
+    self.enemies.forEach(function (enemy) {
+        if ((self.player.x + self.player.w) === enemy.x && self.player.y == enemy.y && enemy.w > 0) {
+            self.enemyCollisionDetected();
+        }
 
 
-    if ((enemy.x + enemy.w) === player.x && (player.y + (player.h - enemy.h)) === enemy.y && enemy.w > 0) {
-        self.enemyCollisionDetected(enemy);
-    }
+        if ((enemy.x + enemy.w) === self.player.x && (self.player.y + (self.player.h - enemy.h)) === enemy.y && enemy.w > 0) {
+            self.enemyCollisionDetected();
+        }
 
 
-    if (player.x >= enemy.x && player.x <= (enemy.x + enemy.w) && (player.y + (player.h - enemy.h)) === enemy.y) {
-            self.enemyCollisionDetected(enemy);
-    }
+        if (self.player.x >= enemy.x && self.player.x <= (enemy.x + enemy.w) && (self.player.y + (self.player.h - enemy.h)) === enemy.y) {
+            self.enemyCollisionDetected();
+        }
+    });
 
-    
 }
 
-Game.prototype.enemyCollisionDetected = function (enemy) {
+Game.prototype.enemyCollisionDetected = function () {
     var self = this;
 
     self.player.x = 0;
-    self.player.y = 480;
+    self.player.y = self.canvasElement.height - self.player.h;
 
     self.score -= 5;
     self.lives -= 1;
@@ -243,26 +253,32 @@ Game.prototype.enemyCollisionDetected = function (enemy) {
 
 Game.prototype.platformCheckCollision = function () {
     var self = this;
-    if (self.player.y <= self.platform.y && self.player.y >= self.platform.y - self.player.h && self.player.speedY >= 0) {
-        if (self.player.x + self.player.w > self.platform.x && self.player.x < self.platform.w + self.platform.x) {
-            self.player.resetStatus();
 
-            //self.player.y = 370;
-            self.player.speedY = 0;
+    self.platforms.forEach(function (platform) {
+        if (self.player.y <= platform.y && self.player.y >= platform.y - self.player.h && self.player.speedY >= 0) {
+            if (self.player.x + self.player.w > platform.x && self.player.x < platform.w + platform.x) {
+                self.player.resetStatus();
 
-        } else if ((self.player.x <= self.platform.x && self.player.x >= self.platform.x - self.player.x) || (self.player.x >= self.platform.x + self.platform.w && self.player.x <= self.platform.x + self.platform.w + self.player.w)) {
-            self.player.grounded = false;
-            self.player.jumping = true;
-            self.player.speedY += self.player.gravity;
+                self.player.y = platform.y - self.player.h;
+                self.player.speedY = 0;
+
+            } else if ((self.player.x <= platform.x && self.player.x >= platform.x - self.player.x) || (self.player.x >= platform.x + platform.w && self.player.x <= platform.x + platform.w + self.player.w)) {
+                self.player.grounded = false;
+                self.player.jumping = true;
+                self.player.speedY += self.player.gravity;
+            }
         }
-    }
-
+    });
 }
 
 Game.prototype.gameOver = function (callback) {
     var self = this;
 
     self.gameOverCallback = callback;
+}
+
+Game.prototype.winningCondition = function (coin) {
+    return coin.w === 0;
 }
 
 Game.prototype.youWon = function (callback) {
