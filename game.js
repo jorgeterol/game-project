@@ -21,6 +21,7 @@ function Game(parentElement) {
     self.enemy2 = new Enemy(100, 480);
 
     self.gameOverCallback = null;
+    self.gameWonCallback = null;
 
     self.score = 0;
     self.lives = 3;
@@ -72,6 +73,7 @@ Game.prototype.createGame = function () {
 
     self.parentElement.appendChild(self.gameScreenElement);
 
+
 }
 
 Game.prototype.playerMovement = function () {
@@ -93,6 +95,7 @@ Game.prototype.playerMovement = function () {
             case 38: // Arrow Up        
                 self.player.setDirection('up')
                 break;
+
         }
     }
 
@@ -131,6 +134,10 @@ Game.prototype.renderFrame = function () {
 
     if (self.lives === 0) {
         return self.gameOverCallback();
+    }
+
+    if (self.score === 20) {
+        return self.gameWonCallback();
     }
 
     self.player.update();
@@ -173,6 +180,26 @@ Game.prototype.coinCheckCollision = function (player, coin) {
     }
 }
 
+// Game.prototype.playerGroundCollision = function (player) {
+//     var self = this;
+
+//     if ((player.y + player.h) === 500) {
+//         self.coinCollisionDetected(coin);
+//     }
+
+
+// }
+
+// Game.prototype.playerGroundCollision = function (player) {
+//     var self = this;
+
+//     if ((player.y + player.h) === 500) {
+//         self.coinCollisionDetected(coin);
+//     }
+
+
+// }
+
 Game.prototype.coinCollisionDetected = function (coin) {
     var self = this;
 
@@ -205,7 +232,7 @@ Game.prototype.enemyCollisionDetected = function (enemy) {
 Game.prototype.platformCheckCollision = function (player, platform) {
     var self = this;
 
-    if (player.y === (platform.y+platform.h) && player.x>platform.x && player.x === (platform.x+platform.w)) {
+    if (player.y === (platform.y + platform.h) && player.x > platform.x && player.x === (platform.x + platform.w)) {
         player.y = platform.y - player.h;
         player.x = platform.x;
         player.jumping = false;
@@ -225,6 +252,12 @@ Game.prototype.gameOver = function (callback) {
     var self = this;
 
     self.gameOverCallback = callback;
+}
+
+Game.prototype.youWon = function (callback) {
+    var self = this;
+
+    self.gameWonCallback = callback;
 }
 
 Game.prototype.destroy = function () {

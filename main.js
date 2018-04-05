@@ -28,7 +28,7 @@ function main() {
     function buildTitleScreen() {
         titleScreenElement = createHtml(`<div class="title-screen container">
             <div>
-            <h1 class="big-title">Tiny Platform</h1>
+            <h1 class="big-title">Small Platformer</h1>
             </div>
             <div class="title-buttons">
             <button type="button" class="btn btn-outline-secondary btn-lg btn-block align-middle btn-start">Start Game</button>
@@ -65,11 +65,20 @@ function main() {
         buildGameOverScreen();
     }
 
+    function handleYouWonClick() {
+        var self = this;
+
+        destroyGameScreen();
+        buildYouWonScreen();
+    }
+
     function buildGameScreen() {
 
         game = new Game(mainContentElement);
 
         game.gameOver(handleGameOverClick);
+        
+        game.youWon(handleYouWonClick);
 
     }
 
@@ -93,8 +102,11 @@ function main() {
     function buildGameOverScreen() {
 
         gameOverScreen = createHtml(`<div class="game-over-screen container">
+        <div class="big-title-score">
         <h1>Score: `+game.score+`</h1>
-        <button class="btn-restart">Restart Game</button>
+        <h2>You died!</h2>
+        </div>
+        <button class="btn btn-outline-secondary btn-lg btn-block align-middle btn-restart">Restart Game</button>
 
         </div>`)
 
@@ -108,6 +120,40 @@ function main() {
     function destroyGameOverScreen() {
         gameOverScreen.remove();
         restartButtonElement.removeEventListener('click', handleRestartClick);
+    }
+
+    //  ------------------
+    //  -- YOU WON SCREEN
+    //  ------------------
+
+    var youWonScreen;
+    var restartYouWonButtonElement;
+
+    function handleRestartWonClick() {
+        destroyYouWonScreen();
+        buildTitleScreen();
+    }
+
+    function buildYouWonScreen() {
+
+        youWonScreen = createHtml(`<div class="you-won-screen container">
+        <div class="big-title-score">
+        <h1>Score: `+game.score+`</h1>
+        <h2>You Won!</h2>
+        </div>
+        <button class="btn btn-outline-secondary btn-lg btn-block align-middle btn-restart">Restart Game</button>
+        </div>`)
+
+        mainContentElement.appendChild(youWonScreen);
+
+        restartYouWonButtonElement = youWonScreen.querySelector('.btn-restart');
+        restartYouWonButtonElement.addEventListener('click', handleRestartWonClick)
+
+    }
+
+    function destroyYouWonScreen() {
+        youWonScreen.remove();
+        restartYouWonButtonElement.removeEventListener('click', handleRestartWonClick);
     }
 
     buildTitleScreen()

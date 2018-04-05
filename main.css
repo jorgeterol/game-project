@@ -84,8 +84,18 @@ p {
 
 .big-title {
     padding-top: 100px;
-    padding-left: 120px;
+    padding-left: 45px;
     margin-bottom: 100px;
+}
+
+.big-title-score {
+    padding-top: 100px;
+    padding-left: 190px;
+    margin-bottom: 100px;
+}
+
+.big-title-score h2{
+    padding-left: 83px;
 }
 
 /* .title-buttons {

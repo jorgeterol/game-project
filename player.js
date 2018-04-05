@@ -11,6 +11,7 @@ function Player() {
     self.speedY = 0;
     self.gravity = 0.1;
     self.jumping = false;
+    self.grounded = true;
     self.color = 'red';
 
 }
@@ -28,15 +29,19 @@ Player.prototype.update = function () {
             break;
 
         case 'up': // Arrow Up        
-            if (!self.jumping) {
+            if (!self.jumping && self.grounded) {
                 self.jumping = true;
+                self.grounded = false;
                 self.speedY = -5;
                 break;
             }
     }
 
-    if (self.jumping) {
+    if (self.jumping && !self.grounded) {
         self.jump(); 
+    }
+    else{
+        self.speedY = 0;
     }
 }
 
@@ -80,14 +85,21 @@ Player.prototype.jump = function () {
 
     if (self.y > rockBottom) {
         self.jumping = false;
+        self.grounded = true;
         self.direction = null;
 
         self.y = rockBottom;
         self.speedY = 0;
     }
 
-    else {
+    if (!self.grounded && self.jumping){
         self.speedY += self.gravity;
         self.y += self.speedY;
     }
+
+ 
+    // else {
+    //     self.speedY += self.gravity;
+    //     self.y += self.speedY;
+    // }
 }
