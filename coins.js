@@ -12,3 +12,10 @@ function Coin(x, y) {
     self.img = new Image();
     self.img.src = 'images/bitcoin.png'
 }
+
+Coin.prototype.draw = function (ctx) {
+    var self = this;
+    
+    ctx.fillStyle = self.color;
+    ctx.drawImage(self.img, self.x, self.y, self.w, self.h);
+};

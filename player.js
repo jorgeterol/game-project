@@ -83,11 +83,13 @@ Player.prototype.moveLeft = function () {
     }
 }
 
-Player.prototype.resetStatus = function () {
+Player.prototype.resetStatus = function (y) {
     var self = this;
 
     self.jumping = false;
     self.grounded = true;
+    self.speedY = 0;
+    self.y = y;
 
     if (self.direction === 'up') {
         self.direction = null;
@@ -104,3 +106,19 @@ Player.prototype.jump = function () {
     }
 
 }
+
+Player.prototype.fall = function () {
+    var self = this;
+
+    self.grounded = false;
+    self.jumping = true;
+    self.speedY += self.gravity;
+}
+
+Player.prototype.draw = function (ctx) {
+    var self = this;
+    
+    ctx.fillStyle = self.color;
+    ctx.fillRect(self.x, self.y, self.w, self.h);
+    ctx.clearRect(self.x + 5, self.y + 5, 15, 15);
+};

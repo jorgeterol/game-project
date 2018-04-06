@@ -2,6 +2,8 @@
 
 'use strict'
 
+var PLAFTORM_MAGNET_DISTANCE = 10;
+
 function Game(parentElement) {
     var self = this;
 
@@ -125,24 +127,19 @@ Game.prototype.clearCanvas = function () {
 Game.prototype.draw = function (object) {
     var self = this;
 
-    self.ctx.fillStyle = self.player.color;
-    self.ctx.fillRect(self.player.x, self.player.y, self.player.w, self.player.h);
-    self.ctx.clearRect(self.player.x + 5, self.player.y + 5, 15, 15);
 
+    self.player.draw(self.ctx);
 
     self.coins.forEach(function (coin) {
-        self.ctx.fillStyle = coin.color;
-        self.ctx.drawImage(coin.img, coin.x, coin.y, coin.w, coin.h);
+        coin.draw(self.ctx);
     })
 
     self.enemies.forEach(function (enemy) {
-        self.ctx.fillStyle = enemy.color;
-        self.ctx.drawImage(enemy.img, enemy.x, enemy.y, enemy.w, enemy.h);
+        enemy.draw(self.ctx);
     })
 
     self.platforms.forEach(function (platform) {
-        self.ctx.fillStyle = platform.color;
-        self.ctx.fillRect(platform.x, platform.y, platform.w, platform.h);
+        platform.draw(self.ctx);
     })
 
 
@@ -160,11 +157,15 @@ Game.prototype.renderFrame = function () {
         return self.gameWonCallback();
     }
 
+    self.platforms.forEach(function (platform) {
+        platform.update();
+    });
 
     self.player.update();
 
     self.playerGroundCollision();
     self.platformCheckCollision();
+    self.purgePlatforms();
     self.coinCheckCollision();
     self.enemyCheckCollision();
 
@@ -186,16 +187,12 @@ Game.prototype.playerGroundCollision = function () {
     var rockBottom = self.canvasElement.height - self.player.h;
 
     if (self.player.y > rockBottom) {
-        self.player.resetStatus();
-        self.player.speedY = 0;
-        self.player.y = rockBottom;
+        self.player.resetStatus(rockBottom);
     }
 }
 
 Game.prototype.coinCheckCollision = function () {
     var self = this;
-
-
 
     self.coins.forEach(function (coin) {
         if ((self.player.x + self.player.w) === coin.x && (self.player.y - (self.player.h - coin.h)) === coin.y) {
@@ -240,7 +237,7 @@ Game.prototype.enemyCheckCollision = function () {
         } else if (enemy.x + enemy.w > self.player.x && enemy.x + enemy.w <= self.player.x + self.player.w && (self.player.y - (self.player.h - enemy.h)) === enemy.y) {
             self.enemyCollisionDetected(enemy);
         }
-        });
+    });
 
 }
 
@@ -258,19 +255,31 @@ Game.prototype.platformCheckCollision = function () {
     var self = this;
 
     self.platforms.forEach(function (platform) {
-        if (self.player.y <= platform.y && self.player.y >= platform.y - self.player.h && self.player.speedY >= 0) {
-            if (self.player.x + self.player.w > platform.x && self.player.x < platform.w + platform.x) {
-                self.player.resetStatus();
-
-                self.player.y = platform.y - self.player.h;
-                self.player.speedY = 0;
-
-            } else if ((self.player.x <= platform.x && self.player.x >= platform.x - self.player.x) || (self.player.x >= platform.x + platform.w && self.player.x <= platform.x + platform.w + self.player.w)) {
-                self.player.grounded = false;
-                self.player.jumping = true;
-                self.player.speedY += self.player.gravity;
-            }
+        var playerFalling = self.player.speedY >= 0;
+        var verticalCollision = self.player.y + self.player.h >= platform.y - PLAFTORM_MAGNET_DISTANCE && self.player.y + self.player.h <= platform.y;
+        var horizontalCollision = self.player.x + self.player.w > platform.x && self.player.x < platform.w + platform.x;
+        if (self.player.jumping && playerFalling && verticalCollision && horizontalCollision) {
+            self.player.resetStatus(platform.y - self.player.h);
+            platform.setCollided(true);
+            self.currentPlatform = platform;
         }
+    });
+
+    if (self.currentPlatform) {
+        var playerOffPlatform = self.player.x + self.player.w <= self.currentPlatform.x || self.player.x >= self.currentPlatform.x + self.currentPlatform.w;
+        if (self.currentPlatform.gone || playerOffPlatform) {
+            self.player.fall();
+            self.currentPlatform.setCollided(false);
+            self.currentPlatform = null;
+        }
+    }
+}
+
+Game.prototype.purgePlatforms = function () {
+    var self = this;
+
+    self.platforms = self.platforms.filter(function (platform) {
+        return !platform.gone;
     });
 }
 
