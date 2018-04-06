@@ -1,14 +1,15 @@
 'use strict'
 
-function Platform(x,y) {
+function Platform(x, y, width, fades) {
     var self = this;
     
     self.x = x;
     self.y = y;
-    self.w = 60;
+    self.w = width || 60;
     self.h = 10;
     self.color = {red: 149, green: 165, blue: 166};
     self.alpha = 1;
+    self.fades = fades || false;
     self.gone = false;
 
 }
@@ -26,7 +27,7 @@ Platform.prototype.setCollided = function (isCollided) {
 Platform.prototype.update = function () {
     var self = this;
 
-    if (!self.hasCollided) {
+    if (!self.fades || !self.hasCollided) {
         return;
     }
     if (self.alpha >= 0) {

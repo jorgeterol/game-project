@@ -4,7 +4,7 @@
 
 var PLAFTORM_MAGNET_DISTANCE = 10;
 
-function Game(parentElement) {
+function Game(parentElement, config) {
     var self = this;
 
     self.parentElement = parentElement;
@@ -17,9 +17,15 @@ function Game(parentElement) {
 
 
     self.player = new Player();
-    self.platforms = [new Platform(200, 200), new Platform(280, 250), new Platform(80, 550), new Platform(180, 500), new Platform(380, 400), new Platform(500, 300), new Platform(600, 200), new Platform(640, 540), new Platform(100, 100)]
-    self.coins = [new Coin(330, 575), new Coin(220, 175), new Coin(600, 175), new Coin(700, 575), new Coin(140, 75)];
-    self.enemies = [new Enemy(420, 575), new Enemy(250, 575), new Enemy(280, 225), new Enemy(635, 175), new Enemy(100, 75)];
+    self.platforms = config.platforms.map(function(item) {
+        return new Platform(item.x, item.y, item.w, item.fades)
+    });
+    self.coins = config.coins.map(function(item) {
+        return new Coin(item.x, item.y);
+    });
+    self.enemies = config.enemies.map(function(item) {
+        return new Enemy(item.x, item.y);
+    });
 
 
     self.gameOverCallback = null;

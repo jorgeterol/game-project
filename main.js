@@ -101,7 +101,7 @@ function main() {
 
     function buildGameScreen() {
 
-        game = new Game(mainContentElement);
+        game = new Game(mainContentElement, config);
 
         game.gameOver(handleGameOverClick);
 
