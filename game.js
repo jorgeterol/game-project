@@ -99,7 +99,8 @@ Game.prototype.playerMovement = function () {
                 break;
 
             case 38: // Arrow Up        
-                self.player.setDirection('up')
+                self.player.jump()
+                self.currentPlatform = null;
                 break;
 
         }
@@ -183,7 +184,6 @@ Game.prototype.renderFrame = function () {
     window.requestAnimationFrame(function () {
         self.renderFrame();
     });
-
 }
 
 Game.prototype.playerGroundCollision = function () {

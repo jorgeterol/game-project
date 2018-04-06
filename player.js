@@ -37,20 +37,13 @@ Player.prototype.update = function () {
         case 'left': // Left
             self.moveLeft();
             break;
-
-        case 'up': // Arrow Up        
-
-            if (!self.jumping && self.grounded) {
-                self.jumping = true;
-                self.grounded = false;
-                self.speedY = -5;
-            }
     }
 
-    if (self.jumping && !self.grounded) {
-        self.jump();
-    }
 
+    if (!self.grounded && self.jumping) {
+        self.speedY += self.gravity;
+        self.y += self.speedY;
+    }
 }
 
 Player.prototype.setDirection = function (direction) {
@@ -109,11 +102,11 @@ Player.prototype.resetStatus = function (y) {
 Player.prototype.jump = function () {
     var self = this;
 
-    if (!self.grounded && self.jumping) {
-        self.speedY += self.gravity;
-        self.y += self.speedY;
+    if (!self.jumping && self.grounded) {
+        self.jumping = true;
+        self.grounded = false;
+        self.speedY = -5;
     }
-
 }
 
 Player.prototype.fall = function () {
