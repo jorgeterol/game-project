@@ -2,8 +2,6 @@
 
 'use strict'
 
-var PLAFTORM_MAGNET_DISTANCE = 10;
-
 function Game(parentElement, config) {
     var self = this;
 
@@ -260,17 +258,6 @@ Game.prototype.enemyCollisionDetected = function () {
 Game.prototype.platformCheckCollision = function () {
     var self = this;
 
-    self.platforms.forEach(function (platform) {
-        var playerFalling = self.player.speedY >= 0;
-        var verticalCollision = self.player.y + self.player.h >= platform.y - PLAFTORM_MAGNET_DISTANCE && self.player.y + self.player.h <= platform.y;
-        var horizontalCollision = self.player.x + self.player.w > platform.x && self.player.x < platform.w + platform.x;
-        if (self.player.jumping && playerFalling && verticalCollision && horizontalCollision) {
-            self.player.resetStatus(platform.y - self.player.h);
-            platform.setCollided(true);
-            self.currentPlatform = platform;
-        }
-    });
-
     if (self.currentPlatform) {
         var playerOffPlatform = self.player.x + self.player.w <= self.currentPlatform.x || self.player.x >= self.currentPlatform.x + self.currentPlatform.w;
         if (self.currentPlatform.gone || playerOffPlatform) {
@@ -278,6 +265,16 @@ Game.prototype.platformCheckCollision = function () {
             self.currentPlatform.setCollided(false);
             self.currentPlatform = null;
         }
+    }
+
+    if (!self.currentPlatform) {
+        self.platforms.forEach(function (platform) {
+            if (self.player.collidesWithPlatform(platform)) {
+                self.player.resetStatus(platform.y - self.player.h);
+                platform.setCollided(true);
+                self.currentPlatform = platform;
+            }
+        });
     }
 }
 

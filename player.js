@@ -17,6 +17,15 @@ function Player() {
 
 }
 
+Player.prototype.collidesWithPlatform = function (platform) {
+    var self = this;
+
+    var playerFalling = self.speedY >= 0;
+    var verticalCollision = self.y + self.h >= platform.y - platform.magnetThreshold && self.y + self.h <= platform.y;
+    var horizontalCollision = self.x + self.w > platform.x && self.x < platform.w + platform.x;
+    return (self.jumping && playerFalling && verticalCollision && horizontalCollision);
+}
+
 Player.prototype.update = function () {
     var self = this;
 
@@ -117,7 +126,7 @@ Player.prototype.fall = function () {
 
 Player.prototype.draw = function (ctx) {
     var self = this;
-    
+
     ctx.fillStyle = self.color;
     ctx.fillRect(self.x, self.y, self.w, self.h);
     ctx.clearRect(self.x + 5, self.y + 5, 15, 15);

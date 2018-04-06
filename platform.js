@@ -1,5 +1,7 @@
 'use strict'
 
+var PLAFTORM_MAGNET_DISTANCE = 10;
+
 function Platform(x, y, width, fades) {
     var self = this;
     
@@ -11,6 +13,8 @@ function Platform(x, y, width, fades) {
     self.alpha = 1;
     self.fades = fades || false;
     self.gone = false;
+
+    self.magnetThreshold = PLAFTORM_MAGNET_DISTANCE;
 
 }
 
